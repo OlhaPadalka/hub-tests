@@ -92,10 +92,10 @@ describe('Login page tests', () => {
         await click(page, loginPageLocator.checkbox);
 
         const onCheckbox = await page.evaluate(() => {
-            return document.querySelector('input[type="checkbox"]').value;
+            return document.querySelector('input[type="checkbox"]').checked;
         })
 
-        expect(onCheckbox).to.contain("on");
+        expect(onCheckbox).to.equal(true);
     });
 
     it('Valid log in', async () => {
