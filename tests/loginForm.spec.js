@@ -28,14 +28,12 @@ before(async () => {
 });
 
 after(async () => {
-    //await page.waitFor(3000);
     await browser.close();
 });
 
 describe('Login page invalid tests', () => {
 
     it('Showing exceptions when inputs were empty', async () => {
-        // await page.goto(config.baseURl);
         await loadUrl(page, config.baseURl);
         await click(page, loginPageLocator.loginBtn)
         await page.waitForSelector(loginPageLocator.helpText);
@@ -52,7 +50,6 @@ describe('Login page invalid tests', () => {
 describe('Forgot password page', () => {
 
     it('Click on the "Forgot password" button',async () => {
-        // await page.goto(config.baseURl);
         await loadUrl(page, config.baseURl);
         await page.waitForSelector(loginPageLocator.emailInput);
 
@@ -81,8 +78,6 @@ describe('Forgot password page', () => {
 describe('Login page tests', () => {
 
     it('Open the page', async () => {
-        //await page.goto("https://hub-staging.clockwise.software/login");
-        // await page.goto(config.baseURl);
         await loadUrl(page, config.baseURl);
         await page.waitForSelector(loginPageLocator.emailInput);
 
@@ -93,16 +88,15 @@ describe('Login page tests', () => {
         expect(title).to.contains("Clockwise Hub");
     });
 
-    // it('Select the "Remember me" chackbox', async () => {
-    //     await page.click(loginPageLocator.checkbox);
+    it('Select the "Remember me" chackbox', async () => {
+        await click(page, loginPageLocator.checkbox);
 
-    //     let boolCheckbox = page.waitForSelector(loginPageLocator.checkbox).valueOf();
-    //     // let trueCheckbox = "false";
-    //     // if(boolCheckbox){
-    //     //     trueCheckbox = "true";
-    //     // }
-    //     expect(boolCheckbox).to.contain("true");
-    // });
+        const onCheckbox = await page.evaluate(() => {
+            return document.querySelector('input[type="checkbox"]').value;
+        })
+
+        expect(onCheckbox).to.contain("on");
+    });
 
     it('Valid log in', async () => {
         await typeText(page, loginPageLocator.emailInput, "admin@gmail.com");
