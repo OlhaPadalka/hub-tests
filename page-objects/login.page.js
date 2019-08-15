@@ -5,5 +5,6 @@ module.exports = {
     helpText: ".help-block",
     rememberMeBtn: ".btn.btn-link",
     alertSucces: ".alert.alert-success",
-    loginBackBtn: ".nav.navbar-nav.navbar-right"
+    loginBackBtn: ".nav.navbar-nav.navbar-right",
+    checkbox: ".checkbox"
 }

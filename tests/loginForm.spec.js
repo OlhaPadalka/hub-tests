@@ -1,6 +1,11 @@
 const puppeteer = require('puppeteer');
 const expect = require('chai').expect;
+
 const config = require('../lib/config');
+const click = require('../lib/helpers').click;
+const typeText = require('../lib/helpers').typeText;
+const loadUrl = require('../lib/helpers').loadUrl;
+
 const loginPageLocator = require('../page-objects/login.page');
 const homePageLocator = require('../page-objects/home.page');
 
@@ -30,17 +35,16 @@ after(async () => {
 describe('Login page invalid tests', () => {
 
     it('Showing exceptions when inputs were empty', async () => {
-        //await page.goto("https://hub-staging.clockwise.software/login");
-        await page.goto(config.baseURl);
-        await page.waitForSelector(loginPageLocator.loginBtn);
-        await page.click(loginPageLocator.loginBtn);
+        // await page.goto(config.baseURl);
+        await loadUrl(page, config.baseURl);
+        await click(page, loginPageLocator.loginBtn)
         await page.waitForSelector(loginPageLocator.helpText);
     });
 
     it('Invalid log in ', async () => {
-        await page.type(loginPageLocator.emailInput, "admin@gmail.com");
-        await page.type(loginPageLocator.passwordInput, "admin1");
-        await page.click(loginPageLocator.loginBtn);
+        await typeText(page, loginPageLocator.emailInput, "admin@gmail.com");
+        await typeText(page, loginPageLocator.passwordInput, "admin1");
+        await click(page, loginPageLocator.loginBtn);
         await page.waitForSelector(loginPageLocator.helpText);
     });
 });
@@ -48,10 +52,11 @@ describe('Login page invalid tests', () => {
 describe('Forgot password page', () => {
 
     it('Click on the "Forgot password" button',async () => {
-        await page.goto(config.baseURl);
+        // await page.goto(config.baseURl);
+        await loadUrl(page, config.baseURl);
         await page.waitForSelector(loginPageLocator.emailInput);
 
-        await page.click(loginPageLocator.rememberMeBtn);
+        await click(page, loginPageLocator.rememberMeBtn);
         await page.waitForSelector(loginPageLocator.emailInput);
 
         const url = page.url();
@@ -59,13 +64,13 @@ describe('Forgot password page', () => {
     });
 
     it('Send new password', async () => {
-        await page.type(loginPageLocator.emailInput,"admin@gmail.com");
-        await page.click(loginPageLocator.loginBtn);
+        await typeText(page, loginPageLocator.emailInput,"admin@gmail.com");
+        await click(page, loginPageLocator.loginBtn);
         await page.waitForSelector(loginPageLocator.alertSucces);
     });
 
     it('Back to login page', async () => {
-        await page.click(loginPageLocator.loginBackBtn);
+        await click(page, loginPageLocator.loginBackBtn);
         await page.waitForSelector(loginPageLocator.passwordInput);
 
         const url = page.url();
@@ -77,7 +82,8 @@ describe('Login page tests', () => {
 
     it('Open the page', async () => {
         //await page.goto("https://hub-staging.clockwise.software/login");
-        await page.goto(config.baseURl);
+        // await page.goto(config.baseURl);
+        await loadUrl(page, config.baseURl);
         await page.waitForSelector(loginPageLocator.emailInput);
 
         const url = await page.url();
@@ -88,13 +94,20 @@ describe('Login page tests', () => {
     });
 
     // it('Select the "Remember me" chackbox', async () => {
-    //     await page.click(".checkbox");
+    //     await page.click(loginPageLocator.checkbox);
+
+    //     let boolCheckbox = page.waitForSelector(loginPageLocator.checkbox).valueOf();
+    //     // let trueCheckbox = "false";
+    //     // if(boolCheckbox){
+    //     //     trueCheckbox = "true";
+    //     // }
+    //     expect(boolCheckbox).to.contain("true");
     // });
 
     it('Valid log in', async () => {
-        await page.type(loginPageLocator.emailInput, "admin@gmail.com");
-        await page.type(loginPageLocator.passwordInput, "admin");
-        await page.click(loginPageLocator.loginBtn);
+        await typeText(page, loginPageLocator.emailInput, "admin@gmail.com");
+        await typeText(page, loginPageLocator.passwordInput, "admin");
+        await click(page, loginPageLocator.loginBtn);
         await page.waitForSelector(homePageLocator.nearestEventsBlock);
 
         const url = await page.url();
