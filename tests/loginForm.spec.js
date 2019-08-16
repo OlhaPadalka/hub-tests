@@ -5,6 +5,8 @@ const config = require('../lib/config');
 const click = require('../lib/helpers').click;
 const typeText = require('../lib/helpers').typeText;
 const loadUrl = require('../lib/helpers').loadUrl;
+const waitForText = require('../lib/helpers').waitForText;
+const shouldExist = require('../lib/helpers').shouldExist;
 
 const loginPageLocator = require('../page-objects/login.page');
 const homePageLocator = require('../page-objects/home.page');
@@ -35,15 +37,18 @@ describe('Login page invalid tests', () => {
 
     it('Showing exceptions when inputs were empty', async () => {
         await loadUrl(page, config.baseURl);
+
+        await waitForText(page, 'body', 'Login');
+
         await click(page, loginPageLocator.loginBtn)
-        await page.waitForSelector(loginPageLocator.helpText);
+        await shouldExist(page, loginPageLocator.helpText);
     });
 
     it('Invalid log in ', async () => {
         await typeText(page, loginPageLocator.emailInput, "admin@gmail.com");
         await typeText(page, loginPageLocator.passwordInput, "admin1");
         await click(page, loginPageLocator.loginBtn);
-        await page.waitForSelector(loginPageLocator.helpText);
+        await shouldExist(page, loginPageLocator.helpText);
     });
 });
 
@@ -51,10 +56,10 @@ describe('Forgot password page', () => {
 
     it('Click on the "Forgot password" button',async () => {
         await loadUrl(page, config.baseURl);
-        await page.waitForSelector(loginPageLocator.emailInput);
+        await shouldExist(page, loginPageLocator.emailInput);
 
         await click(page, loginPageLocator.rememberMeBtn);
-        await page.waitForSelector(loginPageLocator.emailInput);
+        await shouldExist(page, loginPageLocator.emailInput);
 
         const url = page.url();
         await expect(url).to.contain("https://hub-staging.clockwise.software/password/reset");
@@ -63,12 +68,12 @@ describe('Forgot password page', () => {
     it('Send new password', async () => {
         await typeText(page, loginPageLocator.emailInput,"admin@gmail.com");
         await click(page, loginPageLocator.loginBtn);
-        await page.waitForSelector(loginPageLocator.alertSucces);
+        await shouldExist(page, loginPageLocator.alertSucces);
     });
 
     it('Back to login page', async () => {
         await click(page, loginPageLocator.loginBackBtn);
-        await page.waitForSelector(loginPageLocator.passwordInput);
+        await shouldExist(page, loginPageLocator.passwordInput);
 
         const url = page.url();
         await expect(url).to.contain("https://hub-staging.clockwise.software/login");
@@ -79,7 +84,7 @@ describe('Login page tests', () => {
 
     it('Open the page', async () => {
         await loadUrl(page, config.baseURl);
-        await page.waitForSelector(loginPageLocator.emailInput);
+        await shouldExist(page, loginPageLocator.emailInput);
 
         const url = await page.url();
         const title = await page.title();
@@ -102,7 +107,7 @@ describe('Login page tests', () => {
         await typeText(page, loginPageLocator.emailInput, "admin@gmail.com");
         await typeText(page, loginPageLocator.passwordInput, "admin");
         await click(page, loginPageLocator.loginBtn);
-        await page.waitForSelector(homePageLocator.nearestEventsBlock);
+        await shouldExist(page, homePageLocator.nearestEventsBlock);
 
         const url = await page.url();
         expect(url).to.contain("https://hub-staging.clockwise.software/home");
