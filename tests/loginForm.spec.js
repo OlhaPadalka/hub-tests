@@ -40,7 +40,7 @@ describe('Login page invalid tests', () => {
 
         await waitForText(page, 'body', 'Login');
 
-        await click(page, loginPageLocator.loginBtn)
+        await click(page, loginPageLocator.loginBtn);
         await shouldExist(page, loginPageLocator.helpText);
     });
 
@@ -98,7 +98,7 @@ describe('Login page tests', () => {
 
         const onCheckbox = await page.evaluate(() => {
             return document.querySelector('input[type="checkbox"]').checked;
-        })
+        });
 
         expect(onCheckbox).to.equal(true);
     });
