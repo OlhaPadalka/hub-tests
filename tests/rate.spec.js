@@ -36,29 +36,29 @@ describe('Negative tests for Rate page', () => {
         await page.type(loginPage.emailInput, "admin@gmail.com")
         await page.type(loginPage.passwordInput, "admin")
         await page.click(loginPage.loginBtn)
-        await page.waitForSelector(homePage.nearestEventsBlock)
+        await page.waitForSelector(homePage.nearestEventsBlock, {visible:true})
     })
 
     it('go to Rate page from Home page', async () => {
-        await page.waitForSelector(homePage.rateNavLink)
+        await page.waitForSelector(homePage.rateNavLink, {visible:true})
         await page.click(homePage.rateNavLink)
-
-        await page.waitForSelector(ratePage.pointsPannelHeading)
-        await page.waitForSelector(ratePage.usersTabContent)
-
+        await page.waitForSelector(ratePage.pointsPannelHeading, {visible:true})
+        await page.waitForSelector(ratePage.usersTabContent, {visible:true})
     })
 
     it('check that logged in user doesnt see himself name in rate table', async () => {
-        const innerUsersText = await page.evaluate(() => {
-            return document.querySelector('.tab-content').innerText
-        })
+        const innerUsersText = await page.evaluate((selector) => {
+            return document.querySelector(selector).innerText
+        }, ratePage.usersTabContent)
         expect(innerUsersText).to.not.contains('Admin')
     })
 
+    //Debug
     it('try to rate any user with empty reason input', async () => {
+        await page.waitForSelector(ratePage.upVoteBtn, {visible:true})
         await page.click(ratePage.upVoteBtn)
-        await page.waitFor(200) //timeout is needed because of voteBtn visibility
-        await page.waitForSelector(ratePage.modalForm)
+        await page.waitForSelector(ratePage.modalForm, {visible:true})
+        await page.waitForSelector(ratePage.voteBtn, {visible:true})
 
         await page.click(ratePage.voteBtn)
         await page.waitForSelector(ratePage.modalForm, {visible: true})
@@ -68,16 +68,19 @@ describe('Negative tests for Rate page', () => {
     })
 
     it('try to rate any user with reason shorter than 3 characters', async () => {
+        await page.reload()
+        await page.waitForSelector(ratePage.upVoteBtn, {visible:true})
         await page.click(ratePage.upVoteBtn)
-        await page.waitForSelector(ratePage.modalForm)
+        await page.waitForSelector(ratePage.modalForm, {visible:true})
+        await page.waitForSelector(ratePage.voteBtn, {visible:true})
 
         await page.type(ratePage.reasonTextarea, '12')
         await page.click(ratePage.voteBtn)
 
-        await page.waitForSelector(ratePage.alertError)
+        await page.waitForSelector(ratePage.alertError, {visible:true})
 
-        const element = await page.$(ratePage.alertError)
-        const text = await page.evaluate(element => element.textContent, element)
+        const alertEl = await page.$(ratePage.alertError)
+        const text = await page.evaluate(el => el.textContent, alertEl)
         expect(text).to.contain('The reason must be at least 3 characters.')
     })
 })
@@ -85,28 +88,30 @@ describe('Negative tests for Rate page', () => {
 describe('Positive tests for Rate page', () => {
 
     it('rate any user with valid reason', async () => {
+        await page.waitForSelector(ratePage.upVoteBtn, {visible:true})
         await page.click(ratePage.upVoteBtn)
-        await page.waitForSelector(ratePage.modalForm)
-        await page.waitFor(300)
-        
+        await page.waitForSelector(ratePage.modalForm, {visible:true})
+        await page.waitForSelector(ratePage.reasonTextarea, {visible:true})
+        await page.waitForSelector(ratePage.voteBtn, {visible:true})
+
         await page.click(ratePage.reasonTextarea)
         await page.type(ratePage.reasonTextarea, 'test')
         await page.click(ratePage.voteBtn)
 
-        await page.waitForSelector(ratePage.alertSuccess)
+        await page.waitForSelector(ratePage.alertSuccess, {visible:true})
         
-        const element = await page.$(ratePage.alertSuccess)
-        const text = await page.evaluate(element => element.textContent, element)
+        const alert = await page.$(ratePage.alertSuccess)
+        const text = await page.evaluate(el => el.textContent, alert)
         expect(text).to.contain('You voted successfully!')
     })
 
     it('Unvote user', async () => { //needed for clean up data - because tests are cycled
-        await page.waitForSelector(ratePage.downVoteBtn)
+        await page.waitForSelector(ratePage.downVoteBtn, {visible:true})
         await page.click(ratePage.downVoteBtn)
-        await page.waitForSelector(ratePage.alertSuccess)
+        await page.waitForSelector(ratePage.alertSuccess, {visible:true})
         
-        const element = await page.$(ratePage.alertSuccess)
-        const text = await page.evaluate(element => element.textContent, element)
+        const alert = await page.$(ratePage.alertSuccess)
+        const text = await page.evaluate(el => el.textContent, alert)
         expect(text).to.contain('You removed your vote successfully!')
 
         await page.waitForSelector(ratePage.upVoteBtn)
