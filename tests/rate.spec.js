@@ -88,6 +88,7 @@ describe('Negative tests for Rate page', () => {
 describe('Positive tests for Rate page', () => {
 
     it('rate any user with valid reason', async () => {
+        await page.reload()
         await page.waitForSelector(ratePage.upVoteBtn, {visible:true})
         await page.click(ratePage.upVoteBtn)
         await page.waitForSelector(ratePage.modalForm, {visible:true})
@@ -115,5 +116,29 @@ describe('Positive tests for Rate page', () => {
         expect(text).to.contain('You removed your vote successfully!')
 
         await page.waitForSelector(ratePage.upVoteBtn)
+    })
+})
+
+describe('Use all rate points for user ratings', () => {
+
+    it('check that user has 3 points for rating', async () => {
+        await page.waitForSelector(ratePage.pointsPannelHeading)
+        let pointsText = await page.evaluate((selector) => {
+            return document.querySelector(selector).innerText
+        }, ratePage.pointsPannelHeading)
+        expect(pointsText).to.contains('3 point(s) left')
+    })
+
+    it('rate 3 users one by one', async () => {  
+        for(let i=0; i++; i<3){
+            await page.waitForSelector(ratePage.upVoteBtn)
+            await page.click(ratePage.upVoteBtn)
+            await page.waitForSelector(ratePage.reasonTextarea)
+            await page.waitForSelector(ratePage.voteBtn)
+            await page.type(ratePage.reasonTextarea, 'test'+Math.random()*100)
+            await page.click(ratePage.voteBtn)
+            await page.waitForSelector(ratePage.alertSuccess)
+            await page.waitFor(100)    
+        }
     })
 })
