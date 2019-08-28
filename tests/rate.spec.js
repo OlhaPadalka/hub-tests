@@ -33,18 +33,18 @@ after(async () => {
 describe('Negative tests for Rate page', () => {
 
     it('log in to hub as an admin', async () => {
-        await page.goto(config.baseURl)
-        await page.type(loginPage.emailInput, "admin@gmail.com")
-        await page.type(loginPage.passwordInput, "admin")
-        await page.click(loginPage.loginBtn)
-        await page.waitForSelector(homePage.nearestEventsBlock, {visible:true})
+        await functions.loadUrl(page, config.baseURl)
+        await functions.typeText(page, loginPage.emailInput, "admin@gmail.com")
+        await functions.typeText(page, loginPage.passwordInput, "admin")
+        await functions.click(page, loginPage.loginBtn)
+        await functions.shouldExist(page, homePage.nearestEventsBlock, true)
     })
 
     it('go to Rate page from Home page', async () => {
-        await page.waitForSelector(homePage.rateNavLink, {visible:true})
-        await page.click(homePage.rateNavLink)
-        await page.waitForSelector(ratePage.pointsPannelHeading, {visible:true})
-        await page.waitForSelector(ratePage.usersTabContent, {visible:true})
+        await functions.shouldExist(page, homePage.rateNavLink, true)
+        await functions.click(page, homePage.rateNavLink)
+        await functions.shouldExist(page, ratePage.pointsPannelHeading, true)
+        await functions.shouldExist(page, ratePage.usersTabContent, true)
     })
 
     it('check that logged in user doesnt see himself name in rate table', async () => {
@@ -56,29 +56,29 @@ describe('Negative tests for Rate page', () => {
 
     //Debug
     it('try to rate any user with empty reason input', async () => {
-        await page.waitForSelector(ratePage.upVoteBtn, {visible:true})
-        await page.click(ratePage.upVoteBtn)
-        await page.waitForSelector(ratePage.modalForm, {visible:true})
-        await page.waitForSelector(ratePage.voteBtn, {visible:true})
+        await functions.shouldExist(page, ratePage.upVoteBtn, true)
+        await functions.click(page, ratePage.upVoteBtn)
+        await functions.shouldExist(page, ratePage.modalForm, true)
+        await functions.shouldExist(page, ratePage.voteBtn, true)
 
-        await page.click(ratePage.voteBtn)
-        await page.waitForSelector(ratePage.modalForm, {visible: true})
+        await functions.click(page, ratePage.voteBtn)
+        await functions.shouldExist(page, ratePage.modalForm, true)
 
-        await page.click(ratePage.cancelBtn)
-        await page.waitForSelector(ratePage.modalForm, {visible: false})
+        await functions.click(ratePage.cancelBtn)
+        await functions.shouldExist(page, ratePage.modalForm, false)
     })
 
     it('try to rate any user with reason shorter than 3 characters', async () => {
         await page.reload()
-        await page.waitForSelector(ratePage.upVoteBtn, {visible:true})
-        await page.click(ratePage.upVoteBtn)
-        await page.waitForSelector(ratePage.modalForm, {visible:true})
-        await page.waitForSelector(ratePage.voteBtn, {visible:true})
+        await functions.shouldExist(page, ratePage.upVoteBtn, true)
+        await functions.click(page, ratePage.upVoteBtn)
+        await functions.shouldExist(page, ratePage.modalForm, true)
+        await functions.shouldExist(page, ratePage.voteBtn, true)
 
-        await page.type(ratePage.reasonTextarea, '12')
-        await page.click(ratePage.voteBtn)
+        await functions.typeText(page, ratePage.reasonTextarea, '12')
+        await functions.click(page, ratePage.voteBtn)
 
-        await page.waitForSelector(ratePage.alertError, {visible:true})
+        await functions.shouldExist(page, ratePage.alertError, true)
 
         const alertEl = await page.$(ratePage.alertError)
         const text = await page.evaluate(el => el.textContent, alertEl)
@@ -90,17 +90,17 @@ describe('Positive tests for Rate page', () => {
 
     it('rate any user with valid reason', async () => {
         await page.reload()
-        await page.waitForSelector(ratePage.upVoteBtn, {visible:true})
-        await page.click(ratePage.upVoteBtn)
-        await page.waitForSelector(ratePage.modalForm, {visible:true})
-        await page.waitForSelector(ratePage.reasonTextarea, {visible:true})
-        await page.waitForSelector(ratePage.voteBtn, {visible:true})
+        await functions.shouldExist(page, ratePage.upVoteBtn, true)
+        await functions.click(page, ratePage.upVoteBtn)
+        await functions.shouldExist(page, ratePage.modalForm, true)
+        await functions.shouldExist(page, ratePage.reasonTextarea, true)
+        await functions.shouldExist(page, ratePage.voteBtn, true)
 
-        await page.click(ratePage.reasonTextarea)
-        await page.type(ratePage.reasonTextarea, 'test')
-        await page.click(ratePage.voteBtn)
+        await functions.click(page, ratePage.reasonTextarea)
+        await functions.typeText(page, ratePage.reasonTextarea, 'test')
+        await functions.click(ratePage.voteBtn)
 
-        await page.waitForSelector(ratePage.alertSuccess, {visible:true})
+        await functions.shouldExist(page, ratePage.alertSuccess, true)
         
         const alert = await page.$(ratePage.alertSuccess)
         const text = await page.evaluate(el => el.textContent, alert)
@@ -108,22 +108,22 @@ describe('Positive tests for Rate page', () => {
     })
 
     it('Unvote user', async () => { //needed for clean up data - because tests are cycled
-        await page.waitForSelector(ratePage.downVoteBtn, {visible:true})
-        await page.click(ratePage.downVoteBtn)
-        await page.waitForSelector(ratePage.alertSuccess, {visible:true})
+        await functions.shouldExist(page, ratePage.downVoteBtn, true)
+        await functions.click(page, ratePage.downVoteBtn)
+        await functions.shouldExist(page, ratePage.alertSuccess, true)
         
         const alert = await page.$(ratePage.alertSuccess)
         const text = await page.evaluate(el => el.textContent, alert)
         expect(text).to.contain('You removed your vote successfully!')
 
-        await page.waitForSelector(ratePage.upVoteBtn)
+        await functions.shouldExist(page, ratePage.upVoteBtn)
     })
 })
 
 describe('Use all rate points for user ratings', () => {
 
     it('check that user has 3 points for rating', async () => {
-        await page.waitForSelector(ratePage.pointsPannelHeading)
+        await functions.shouldExist(page, ratePage.pointsPannelHeading, true)
         let pointsText = await page.evaluate((selector) => {
             return document.querySelector(selector).innerText
         }, ratePage.pointsPannelHeading)
@@ -132,13 +132,13 @@ describe('Use all rate points for user ratings', () => {
 
     it('rate 3 users one by one', async () => {  
         for(let i=0; i++; i<3){
-            await page.waitForSelector(ratePage.upVoteBtn)
-            await page.click(ratePage.upVoteBtn)
-            await page.waitForSelector(ratePage.reasonTextarea)
-            await page.waitForSelector(ratePage.voteBtn)
-            await page.type(ratePage.reasonTextarea, 'test'+Math.random()*100)
-            await page.click(ratePage.voteBtn)
-            await page.waitForSelector(ratePage.alertSuccess)
+            await functions.shouldExist(page, ratePage.upVoteBtn, true)
+            await functions.click(page, ratePage.upVoteBtn)
+            await functions.shouldExist(page, ratePage.reasonTextarea, true)
+            await functions.shouldExist(ratePage.voteBtn)
+            await functions.typeText(page, ratePage.reasonTextarea, 'test'+Math.random()*100)
+            await functions.click(ratePage.voteBtn)
+            await functions.shouldExist(page, ratePage.alertSuccess, true)
             await page.waitFor(100)    
         }
     })
