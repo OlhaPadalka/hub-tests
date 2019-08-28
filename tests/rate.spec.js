@@ -1,29 +1,30 @@
-const puppeteer = require('puppeteer')
-const expect = require('chai').expect
-const config = require('../lib/config')
+const puppeteer = require("puppeteer");
+const expect = require("chai").expect;
 
+const config = require("../lib/config");
+const functions = require("../lib/helpers");
 
-const loginPage = require('../page-objects/login.page')
-const homePage = require('../page-objects/home.page')
-const ratePage = require('../page-objects/rate.page')
+const loginPage = require("../page-objects/login.page");
+const homePage = require("../page-objects/home.page");
+const ratePage = require("../page-objects/rate.page");
 
-let browser
-let page
+let browser;
+let page;
 
 before(async () => {
-    browser = await puppeteer.launch({
-        headless: config.isHeadLess,
-        slowMo: config.slowMo,
-        devtools: config.devtools,
-        timeout: config.launchTimeout,
-    })
-    page = await browser.newPage();
-    await page.setDefaultTimeout(config.waitingTimeout);
-    await page.setViewport({
-        width: config.viewportWeiht,
-        height: config.viewportHeight
-    })
-})
+  browser = await puppeteer.launch({
+    headless: config.isHeadLess,
+    slowMo: config.slowMo,
+    devtools: config.devtools,
+    timeout: config.launchTimeout
+  });
+  page = await browser.newPage();
+  await page.setDefaultTimeout(config.waitingTimeout);
+  await page.setViewport({
+    width: config.viewportWeiht,
+    height: config.viewportHeight
+  });
+});
 
 after(async () => {
     await browser.close();
