@@ -29,7 +29,7 @@ after(async () => {
   await browser.close()
 })
 
-describe('Calendar test, as an admin', () => {
+describe('Create a holiday event as an Admin', () => {
 
   it('log in to hub as an Admin', async () => {
     await loginPage.login(page, 'admin@gmail.com', 'admin')
@@ -43,5 +43,28 @@ describe('Calendar test, as an admin', () => {
     await functions.shouldExist(page, calendarPage.calendarMonthView)
   })
 
+  it('click on date cell in Calendar', async () => {
+    await functions.click(page, calendarPage.dateCell)
+  })
+
+  it('check that event form is popped up', async () => {
+    await functions.shouldExist(page, calendarPage.eventModal)
+  })
+
+  it('click on event Type drop-down', async () => {
+    await functions.click(page, calendarPage.eventTypeDropDown)
+  })
+
+  it('select event type = Holiday', async () => {
+    await page.select(calendarPage.eventTypeDropDown, calendarPage.events.holiday)
+  })
+
+  it('submit event', async () => {
+    await functions.click(page, calendarPage.fillOutButton)
+  })
+
+  it('wait for event submiting', async () => {
+    await page.waitFor(300)
+  })
 
 })
