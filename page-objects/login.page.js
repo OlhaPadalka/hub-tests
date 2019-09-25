@@ -6,5 +6,6 @@ module.exports = {
   rememberMeBtn: '.btn.btn-link',
   alertSucces: '.alert.alert-success',
   loginBackBtn: '.nav.navbar-nav.navbar-right',
-  checkbox: 'input[type="checkbox"]'
+  checkbox: 'input[type="checkbox"]',
+  forgotPassword: 'a.btn-link'
 }

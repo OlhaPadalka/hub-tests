@@ -9,7 +9,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout=30000 ./tests"
+    "test": "mocha --timeout=30000 ./tests --reporter mochawesome"
   },
   "directories": {
     "test": "tests"
@@ -26,6 +26,7 @@
     "minimatch": "^3.0.4",
     "minimist": "^0.0.8",
     "mkdirp": "^0.5.1",
+    "mochawesome": "^4.1.0",
     "ms": "^2.1.1",
     "nice-try": "^1.0.5"
   },

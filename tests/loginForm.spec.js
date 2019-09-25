@@ -32,83 +32,132 @@ after(async () => {
 })
 
 describe('Login page invalid tests', () => {
-  it('Showing exceptions when inputs were empty', async () => {
-    await functions.loadUrl(page, config.baseURl)
+  
+  describe('Submit empty login form', () => {
 
-    await functions.waitForText(page, 'body', 'Login')
+    it('go to login page', async () => {
+      await functions.loadUrl(page, config.baseURl)
+    })
 
-    await functions.click(page, loginPageLocator.loginBtn)
-    await functions.shouldExist(page, loginPageLocator.helpText)
+    it('check that page is loaded', async () => {
+      await functions.waitForText(page, 'body', 'Login')
+    })
+
+    it('submit empty login form', async () => {
+      await functions.click(page, loginPageLocator.loginBtn)
+    })
+
+    it('check that error is shown', async () => {
+      await functions.shouldExist(page, loginPageLocator.helpText)
+    })
+
+  })
+  
+  describe('Try to log in with invalid credentials', async () => {
+    
+    it('Fill in email input', async () => {
+      await functions.typeText(page, loginPageLocator.emailInput, utils.generateEmail())
+    })
+
+    it('fill in password input', async () => {
+      await functions.typeText(page, loginPageLocator.passwordInput, utils.generateID(5))
+    })
+
+    it('submit form', async () => {
+      await functions.click(page, loginPageLocator.loginBtn)
+    })
+
+    it('check that error is shown', async () => {
+      await functions.shouldExist(page, loginPageLocator.helpText)
+    })
+
   })
 
-  it('Invalid log in ', async () => {
-    await functions.typeText(page, loginPageLocator.emailInput, utils.generateEmail())
-    await functions.typeText(page, loginPageLocator.passwordInput, utils.generateID(5))
-    await functions.click(page, loginPageLocator.loginBtn)
-    await functions.shouldExist(page, loginPageLocator.helpText)
-  })
 })
 
-describe('Forgot password page', () => {
-  it('Click on the "Forgot password" button', async () => {
+describe('Forgot password tests', () => {
+
+  it('go to login page', async () => {
     await functions.loadUrl(page, config.baseURl)
-    await functions.shouldExist(page, loginPageLocator.emailInput)
-
-    await functions.click(page, loginPageLocator.rememberMeBtn)
-    await functions.shouldExist(page, loginPageLocator.emailInput)
-
-    const url = page.url()
-    await expect(url).to.contain(
-      'https://hub-staging.clockwise.software/password/reset'
-    )
   })
 
-  it('Send new password', async () => {
+  it('Click on the "Forgot password" link', async () => {
+    await functions.click(page, loginPageLocator.forgotPassword)
+  })
+
+  it('check that user is redirected to reset password page', async () => {
+    const url = await page.url()
+    expect(url).to.contain('https://hub-staging.clockwise.software/password/reset')
+  })
+
+  it('fill in email input', async () => {
     await functions.typeText(page, loginPageLocator.emailInput, 'admin@gmail.com')
+  })
+
+  it('submit password reset', async () => {
     await functions.click(page, loginPageLocator.loginBtn)
+  })
+
+  it('check success alert', async () => {
     await functions.shouldExist(page, loginPageLocator.alertSucces)
   })
 
-  it('Back to login page', async () => {
+  it('go back to login page', async () => {
     await functions.click(page, loginPageLocator.loginBackBtn)
-    await functions.shouldExist(page, loginPageLocator.passwordInput)
-
-    const url = page.url()
-    await expect(url).to.contain(
-      'https://hub-staging.clockwise.software/login'
-    )
   })
+
+  it('check that user is on login page', async () => {
+    await functions.shouldExist(page, loginPageLocator.passwordInput)
+  })
+
+  it('check url path', async () => {
+    const url = await page.url()
+    expect(url).to.contain('https://hub-staging.clockwise.software/login')
+  })
+
 })
 
-describe('Login page tests', () => {
-  it('Open the page', async () => {
+describe('Log in with valid credentials', () => {
+  
+  it('load login page', async () => {
     await functions.loadUrl(page, config.baseURl)
-    await functions.shouldExist(page, loginPageLocator.emailInput)
+  })
 
-    const url = await page.url()
+  it('check page title', async () => {
     const title = await page.title()
-
-    expect(url).to.contain('https://hub-staging.clockwise.software/login')
     expect(title).to.contains('Clockwise Hub')
   })
 
-  it('Select the "Remember me" checkbox', async () => {
+  it('click on "Remember me" checkbox', async () => {
     await functions.click(page, loginPageLocator.checkbox)
+  })
 
+  it('check that checkbox is checked', async () => {
     const onCheckbox = await page.evaluate(() => {
       return document.querySelector('input[type="checkbox"]').checked
     })
-
     expect(onCheckbox).to.equal(true)
   })
 
-  it('Valid log in', async () => {
+  it('fill in email input with valid data', async () => {
     await functions.typeText(page, loginPageLocator.emailInput, 'admin@gmail.com')
-    await functions.typeText(page, loginPageLocator.passwordInput, 'admin')
-    await functions.click(page, loginPageLocator.loginBtn)
-    await functions.shouldExist(page, homePageLocator.nearestEventsBlock)
+  })
 
+  it('fill in password input with valid data', async () => {
+    await functions.typeText(page, loginPageLocator.passwordInput, 'admin')
+  })
+
+  it('submit login form', async () => {
+    await functions.click(page, loginPageLocator.loginBtn)
+  })
+
+  it('check that dashboard is loaded', async () => {
+    await functions.shouldExist(page, homePageLocator.nearestEventsBlock)
+  })
+
+  it('check url path for home page', async () => {
     const url = await page.url()
     expect(url).to.contain('https://hub-staging.clockwise.software/home')
   })
+
 })
