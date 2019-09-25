@@ -32,20 +32,8 @@ after(async () => {
 
 describe('Negative tests for Rate page', () => {
 
-    it('load login page', async () => {
-        await functions.loadUrl(page, config.baseURl)
-    })
-
-    it('fill in email input', async () => {
-        await functions.typeText(page, loginPage.emailInput, 'admin@gmail.com')
-    })
-
-    it('fill in password input', async () => {
-        await functions.typeText(page, loginPage.passwordInput, 'admin')
-    })
-
-    it('submit login form', async () => {
-        await functions.click(page, loginPage.loginBtn)
+    it('log in as an Admin', async () => {
+        await loginPage.login(page, 'admin@gmail.com', 'admin')
     })
 
     it('check that dashboard is visible', async () => {
