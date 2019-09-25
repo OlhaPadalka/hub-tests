@@ -72,6 +72,10 @@ describe('Negative tests for Rate page', () => {
         await functions.click(page, ratePage.upVoteBtn)
     })
 
+    it('wait for feedback form appearence', async () => {
+        await page.waitFor(300)
+    })
+
     it('submit empty feedback form', async () => {
         await functions.click(page, ratePage.voteBtn)
     })
@@ -81,7 +85,7 @@ describe('Negative tests for Rate page', () => {
     })
 
     it('cancel voting for closing form', async () => {
-        await functions.click(ratePage.cancelBtn)
+        await functions.click(page, ratePage.cancelBtn)
     })
 
     it('check that form is invisible', async () => {
@@ -96,12 +100,20 @@ describe('Negative tests for Rate page', () => {
         await functions.click(page, ratePage.upVoteBtn)
     })
 
+    it('wait for feedback form appearence', async () => {
+        await page.waitFor(300)
+    })
+
     it('type reason shorter than 3 symbols', async () => {
         await functions.typeText(page, ratePage.reasonTextarea, '+')
     })
 
     it('submit vote', async () => {
         await functions.click(page, ratePage.voteBtn)
+    })
+
+    it('wait while submiting is ended', async () => {
+        await page.waitFor(300)
     })
 
     it('check error alert', async () => {
@@ -121,13 +133,20 @@ describe('Positive tests for Rate page', () => {
         await functions.click(page, ratePage.upVoteBtn)
     })
 
+    it('wait for feedback form appearence', async () => {
+        await page.waitFor(300)
+    })
+
     it('fill in feedback form with valid reason', async () => {
-        await functions.click(page, ratePage.reasonTextarea)
         await functions.typeText(page, ratePage.reasonTextarea, 'test')
     })
 
     it('submit feedback', async () => {
-        await functions.click(ratePage.voteBtn)
+        await functions.click(page, ratePage.voteBtn)
+    })
+
+    it('wait while submiting is ended', async () => {
+        await page.waitFor(300)
     })
 
     it('check success alert', async () => {
