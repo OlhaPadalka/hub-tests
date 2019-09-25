@@ -26,5 +26,5 @@ after(async () => {
 })
 
 describe('Calendar test, as a user', () => {
-  it('', () => {})
+
 })
