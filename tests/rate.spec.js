@@ -1,15 +1,15 @@
-const puppeteer = require("puppeteer");
-const expect = require("chai").expect;
+const puppeteer = require('puppeteer')
+const expect = require('chai').expect
 
-const config = require("../lib/config");
-const functions = require("../lib/helpers");
+const config = require('../lib/config')
+const functions = require('../lib/helpers')
 
-const loginPage = require("../page-objects/login.page");
-const homePage = require("../page-objects/home.page");
-const ratePage = require("../page-objects/rate.page");
+const loginPage = require('../page-objects/login.page')
+const homePage = require('../page-objects/home.page')
+const ratePage = require('../page-objects/rate.page')
 
-let browser;
-let page;
+let browser
+let page
 
 before(async () => {
   browser = await puppeteer.launch({
@@ -17,25 +17,25 @@ before(async () => {
     slowMo: config.slowMo,
     devtools: config.devtools,
     timeout: config.launchTimeout
-  });
-  page = await browser.newPage();
-  await page.setDefaultTimeout(config.waitingTimeout);
+  })
+  page = await browser.newPage()
+  await page.setDefaultTimeout(config.waitingTimeout)
   await page.setViewport({
     width: config.viewportWeiht,
     height: config.viewportHeight
-  });
-});
+  })
+})
 
 after(async () => {
-    await browser.close();
+    await browser.close()
 })
 
 describe('Negative tests for Rate page', () => {
 
     it('log in to hub as an admin', async () => {
         await functions.loadUrl(page, config.baseURl)
-        await functions.typeText(page, loginPage.emailInput, "admin@gmail.com")
-        await functions.typeText(page, loginPage.passwordInput, "admin")
+        await functions.typeText(page, loginPage.emailInput, 'admin@gmail.com')
+        await functions.typeText(page, loginPage.passwordInput, 'admin')
         await functions.click(page, loginPage.loginBtn)
         await functions.shouldExist(page, homePage.nearestEventsBlock, true)
     })
