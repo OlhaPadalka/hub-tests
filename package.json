@@ -24,7 +24,7 @@
     "mime": "^2.4.4",
     "mimic-fn": "^2.1.0",
     "minimatch": "^3.0.4",
-    "minimist": "^0.0.8",
+    "minimist": "^1.2.3",
     "mkdirp": "^0.5.1",
     "mochawesome": "^4.1.0",
     "ms": "^2.1.1",
