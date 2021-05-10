@@ -19,7 +19,7 @@
     "https-proxy-agent": "^2.2.2",
     "jest": "^24.8.0",
     "lcid": "^2.0.0",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.21",
     "log-symbols": "^2.2.0",
     "mime": "^2.4.4",
     "mimic-fn": "^2.1.0",
